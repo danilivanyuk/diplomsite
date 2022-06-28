@@ -385,9 +385,13 @@ def finishedOrders(request):
     
     timeSort = request.GET.get('timeSort')
     exactDate = request.GET.get('exactDate')
+    dateFrom = request.GET.get('dateFrom')
+    dateTo = request.GET.get('dateTo')
+    customerName = request.GET.get('customerName')
+    productTitle = request.GET.get('productTitle')
     if is_valid_queryparam(exactDate):
         orders = Order.objects.filter(ordered_date__range = [exactDate, exactDate])
-    if is_valid_queryparam(timeSort):
+    elif is_valid_queryparam(timeSort):
         if timeSort == 'thatMonth':
             orders=Order.objects.filter(ordered_date__month__gte=currentMonth)
         if timeSort == 'previousMonth':
@@ -396,6 +400,20 @@ def finishedOrders(request):
             orders = Order.objects.filter(ordered_date__gte=datetime.datetime.now()-timedelta(days=30))
         if timeSort == 'lastThreeMonth':
             orders = Order.objects.filter(ordered_date__gte=datetime.datetime.now()-timedelta(days=90))
+    elif is_valid_queryparam(dateFrom) and is_valid_queryparam(dateTo):
+        orders = Order.objects.filter(ordered_date__range = [dateFrom, dateTo])
+    elif is_valid_queryparam(dateFrom):
+        orders=Order.objects.filter(ordered_date__gte=dateFrom)
+        
+    elif is_valid_queryparam(dateTo):
+        orders=Order.objects.filter(ordered_date__lte=dateTo)
+    elif is_valid_queryparam(customerName) and is_valid_queryparam(productTitle):
+        orders = orders.filter(customer__name = customerName, orderproduct__product__title__icontains=productTitle)    
+    elif is_valid_queryparam(customerName):
+        orders = orders.filter(customer__name = customerName)
+    elif is_valid_queryparam(productTitle):
+        orders = orders.filter(orderproduct__product__title__icontains=productTitle)
+        
   
     context = {'orders': orders,
                'order_products': order_products, }
@@ -413,9 +431,13 @@ def unfinishedOrders(request):
         order__in=orders)
     timeSort = request.GET.get('timeSort')
     exactDate = request.GET.get('exactDate')
+    dateFrom = request.GET.get('dateFrom')
+    dateTo = request.GET.get('dateTo')
+    productTitle = request.GET.get('productTitle')
+    customerName = request.GET.get('customerName')
     if is_valid_queryparam(exactDate):
         orders = Order.objects.filter(ordered_date__range = [exactDate, exactDate], finished=False, complete=True)
-    if is_valid_queryparam(timeSort):
+    elif is_valid_queryparam(timeSort):
         if timeSort == 'thatMonth':
             orders=Order.objects.filter(ordered_date__month__gte=currentMonth, finished=False, complete=True)
         if timeSort == 'previousMonth':
@@ -424,6 +446,20 @@ def unfinishedOrders(request):
             orders = Order.objects.filter(ordered_date__gte=datetime.datetime.now()-timedelta(days=30), finished=False, complete=True)
         if timeSort == 'lastThreeMonth':
             orders = Order.objects.filter(ordered_date__gte=datetime.datetime.now()-timedelta(days=90), finished=False, complete=True)
+    elif is_valid_queryparam(dateFrom) and is_valid_queryparam(dateTo):
+        orders = Order.objects.filter(ordered_date__range = [dateFrom, dateTo])
+    elif is_valid_queryparam(dateFrom):
+        orders=Order.objects.filter(ordered_date__gte=dateFrom)
+        
+    elif is_valid_queryparam(dateTo):
+        orders=Order.objects.filter(ordered_date__lte=dateTo)
+    elif is_valid_queryparam(customerName) and is_valid_queryparam(productTitle):
+        orders = orders.filter(customer__name = customerName, orderproduct__product__title__icontains=productTitle)
+    elif is_valid_queryparam(customerName):
+        orders = orders.filter(customer__name = customerName)
+    elif is_valid_queryparam(productTitle):
+        orders = orders.filter(orderproduct__product__title__icontains=productTitle)
+    
     context = {'unfinished_orders': orders,
                'unfinished_orderProducts': unfinished_orderProducts}
     return render(request, 'store/adminPanel/unfinished_orders.html', context)
@@ -510,6 +546,7 @@ def productReports(request):
         rows = Product.objects.filter(id__in = a).values_list('title', 'category__name', 'serialNumber', 'cycles','color', 'stockQuantity', 'priceBuy', 'priceSell')
 
         for row in rows:
+            print(row)
             row_num += 1
             for col_num in range(len(row)):
                 ws.write(row_num, col_num+2, row[col_num], font_style)
@@ -522,6 +559,154 @@ def productReports(request):
 
 @admin_only
 def orderReports(request):
+    currentMonth = datetime.datetime.now().month
     
-    context = {}
+    a = []
+    timeSort = request.GET.get('timeSort')
+    exactDate = request.GET.get('exactDate')
+    dateFrom = request.GET.get('dateFrom')
+    dateTo = request.GET.get('dateTo')
+    productTitle = request.GET.get('productTitle')
+    customerName = request.GET.get('customerName')
+    if is_valid_queryparam(exactDate):
+        orders = Order.objects.filter(ordered_date__range = [exactDate, exactDate])
+        for i in orders:
+            a.append(i.id)
+    elif is_valid_queryparam(timeSort):
+        if timeSort == 'thatMonth':
+            orders=Order.objects.filter(ordered_date__month__gte=currentMonth)
+            for i in orders:
+                a.append(i.id)
+        if timeSort == 'previousMonth':
+            orders=Order.objects.filter(ordered_date__month=currentMonth-1)
+            for i in orders:
+                a.append(i.id)
+        if timeSort == 'lastMonth':
+            orders = Order.objects.filter(ordered_date__gte=datetime.datetime.now()-timedelta(days=30))
+            for i in orders:
+                a.append(i.id)
+        if timeSort == 'lastThreeMonth':
+            orders = Order.objects.filter(ordered_date__gte=datetime.datetime.now()-timedelta(days=90))
+            for i in orders:
+                a.append(i.id)
+    elif is_valid_queryparam(dateFrom) and is_valid_queryparam(dateTo):
+        print(dateFrom, dateTo)
+        orders = Order.objects.filter(ordered_date__range = [dateFrom, dateTo])
+        for i in orders:
+            a.append(i.id)
+    elif is_valid_queryparam(dateFrom):
+        orders=Order.objects.filter(ordered_date__gte=dateFrom)
+        for i in orders:
+            a.append(i.id)
+    elif is_valid_queryparam(dateTo):
+        orders=Order.objects.filter(ordered_date__lte=dateTo)
+        for i in orders:
+            a.append(i.id)
+    elif is_valid_queryparam(customerName) and is_valid_queryparam(productTitle):
+        orders = Order.objects.filter(customer__name = customerName, orderproduct__product__title__icontains=productTitle)
+        for i in orders:
+            a.append(i.id)
+    elif is_valid_queryparam(customerName):
+        orders = Order.objects.filter(customer__name = customerName)
+        for i in orders:
+            a.append(i.id)
+    elif is_valid_queryparam(productTitle):
+        orders=Order.objects.filter(orderproduct__product__title__icontains=productTitle)
+        for i in orders:
+            a.append(i.id)
+    else:
+        orders = Order.objects.all()
+        for i in orders:
+            a.append(i.id)
+
+    
+    order_products = OrderProduct.objects.filter(
+        order__in=orders)
+
+
+    print(a)
+    if request.method == 'POST':
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="Products.xls"'
+
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Товары', cell_overwrite_ok=True)
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+        font_style.font.height = 320
+        font_style.alignment.horz = xlwt.Alignment.HORZ_CENTER
+
+        ws.write_merge(1, 3, 3, 7, "Список Заказов", font_style)
+        row_num = 5
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+        font_style.font.height= 280
+        font_style.borders.top = 2
+        font_style.borders.right = 2
+        font_style.borders.left = 2
+        font_style.borders.bottom = 2
+
+        columns = ['Имя', 'Телефон', 'Дата заказа', 'Город','Улица', 'Дом', 'Квартира']
+        ws.col(2).width = 7000 # Имя
+        ws.col(3).width = 10000 #Телефон
+        ws.col(4).width = 5000 #Дата заказа
+        ws.col(5).width = 3500 #Город
+        ws.col(6).width = 4000 #Улица
+        ws.col(7).width = 4500 # Дом
+        ws.col(8).width = 5000 # Квартира
+        # ws.col(9).width = 5200 # Цена продажи
+        # ws.col(10).width = 3000 # счет
+
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num+2, columns[col_num], font_style)
+
+        font_style = xlwt.XFStyle()
+        font_style.font.height = 240
+        font_style.borders.top = 1
+        font_style.borders.right = 1
+        font_style.borders.left = 1
+        font_style.borders.bottom = 1
+
+        rows = Order.objects.filter(id__in = a, complete = True)
+        # rows = Product.objects.filter(id__in = a).values_list('title', 'category__name', 'serialNumber', 'cycles','color', 'stockQuantity', 'priceBuy', 'priceSell')
+
+        for row in rows:
+            order_details = Order.objects.filter(id = row.id, complete=True).values_list('customer__name', 'customer__phone','ordered_date', 'shippingadress__city', 'shippingadress__street', 'shippingadress__house', 'shippingadress__appartament')
+            order_products_details = OrderProduct.objects.filter(order = row.id, order__complete=True).values_list('product__title', 'product__serialNumber', 'product__color', 'quantity', 'product__priceSell')
+            
+            row_num += 1
+            orderDate = ''
+            getDate = Order.objects.filter(id = row.id).values_list('ordered_date')
+            for i in getDate:
+                for x in i:
+                    orderDate = str(x)
+
+            orderTotal = Order.objects.get(id=row.id).get_cart_total
+            print(orderTotal)
+            
+
+            order_row_num = row_num+1
+            for i in order_details:
+                for col_num in range(7):
+                    ws.write(row_num, col_num+2, i[col_num], font_style)
+            ws.write(row_num, 4, orderDate, font_style)
+            for order_product in order_products_details:
+                for col_num in range(5):
+                    ws.write(order_row_num, col_num+2, order_product[col_num], font_style)
+                order_row_num += 1
+            ws.write(order_row_num-1, 7, 'Итого: ', font_style)
+            ws.write(order_row_num-1, 8, orderTotal, font_style)
+            
+                    
+            row_num = order_row_num+1
+            
+
+                # ws.write(row_num, col_num+2, 'priv)', font_style)
+        wb.save(response)
+                
+            
+        return response
+  
+    context = {'orders': orders,
+               'order_products': order_products, }
     return render(request, 'store/adminPanel/order_reports.html', context)

@@ -6,7 +6,7 @@
   <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Завершенные заказы</h1>
+    <h1 class="h3 mb-2 text-gray-800">Отчеты по заказам</h1>
     
   
     <!-- DataTales Example -->
@@ -14,7 +14,7 @@
         
         <div class="card-body">
             <div class="table-responsive">
-              <form action="" method="GET" style="width: 600px; display: flex; padding: 10px;">
+              <form action="" method="GET" style="max-width: 100%; display: flex; padding: 10px;">
                 <select class="form-control form-select  mb-3 mr-2" name="timeSort">
 
                     <option value="">Сортировка по месяцу</option>
@@ -25,10 +25,20 @@
                   
                 </select>
                 <input class="form-control" type="date" name="exactDate" placeholder="Название" style="margin-right: 10px;"/>
+                <label for="dateFrom" style="display: flex; align-items:center; margin-right:5px">От: </label>
+                <input class="form-control" type="date" name="dateFrom" placeholder="Название" style="margin-right: 10px;"/>
+                <label for="dateTo" style="display: flex; align-items:center; margin-right:5px">До: </label>
+                <input class="form-control" type="date" name="dateTo" placeholder="Название" style="margin-right: 10px;"/>
+                <input class="form-control" type="text" name="customerName" placeholder="Пользователь" style="margin-right: 10px;"/>
+                <input class="form-control" type="text" name="productTitle" placeholder="Товар" style="margin-right: 10px;"/>
                 <button class="btn btn-success btn-circle" type="submit" value="Применить">
                   <i class="fas fa-check"></i>
                 </button>
 
+              </form>
+              <form method="POST" enctype="multipart/form-data"  action="" class="mt-3 mb-3">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Экспортировать в эксель</button>
               </form>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -37,24 +47,14 @@
                           <th>Телефон</th>
                           <th>Дата заказа</th>
                           <th>Адрес</th>
-                          <th></th>
-                          <th></th>
+                          <th>id Заказа</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                          <th>Имя</th>
-                          <th>Телефон</th>
-                          <th>Дата заказа</th>
-                          <th>Адрес</th>
-                          <th></th>
-                          <th></th>
-                        </tr>
-                    </tfoot>
+                    
                     <tbody>
                       {% for order in orders %}
 
-                        {% if order.finished %}
+                        {% if order.complete %}
                         <tr>
                           <td>{{order.customer}}</td>
                           <td>{{order.customer.phone}}</td>
@@ -64,10 +64,41 @@
                           {% endfor %}
                           
                           <td><a href="{% url 'show_order' order %}">{{order.transaction_id}}</a></td>
-                          <td><a class="manage-order-btn" id="finish-order" href="{% url 'unfinish_order' order %}">Пометить как незавершенный</a></td>
-                          <td><a class="manage-order-btn" id="delete-order" style="margin-left: 10px; " href="{% url 'delete_order' order %}">Удалить заказ</a></td>
+                          
                           
                         </tr>
+                        <tr>
+                            <td colspan="5">
+                              <table class="table mb-0"><thead>
+                                <tr>
+                                  <th>Название</th>
+                                  <th>Серийный номер</th>
+                                  <th>Цвет</th>
+                                  <th>Количество</th>
+                                  <th>Стоимость</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_product in order_products %}
+                                    {% if order_product.order == order %}
+                                    <tr>
+                                        <td>{{order_product.product}}</td>
+                                        <td>{{order_product.product.serialNumber}}</td>
+                                        <td>{{order_product.product.color}}</td>
+                                        <td>{{order_product.quantity}}</td>
+                                        <td>{{order_product.get_total}}</td>
+                                    </tr>
+                                    
+                                    {% endif %}
+                                    {% endfor %}
+                                    <td colspan="1">Всего</td>
+                                    <td colspan="4" style="text-align: right;">{{order.get_cart_total}} Т</td>
+                            </tbody>
+                                
+
+                              </table>
+                            </td>
+                          </tr>
                         {% endif %}
 
                       {% endfor %}
@@ -75,9 +106,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="pages">
-              {% include 'store/paginator.html' %}
-            </div>
+            
         </div>
         
     </div>

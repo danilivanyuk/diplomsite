@@ -18,7 +18,7 @@
         
         <div class="card-body">
             <div class="table-responsive">
-              <form action="" method="GET" style="width: 600px; display: flex; padding: 10px;">
+              <form action="" method="GET" style="max-width: 100%; display: flex; padding: 10px;">
                 <select class="form-control form-select  mb-3 mr-2" name="timeSort">
 
                     <option value="">Сортировка по месяцу</option>
@@ -29,6 +29,12 @@
                   
                 </select>
                 <input class="form-control" type="date" name="exactDate" placeholder="Название" style="margin-right: 10px;"/>
+                <label for="dateFrom" style="display: flex; align-items:center; margin-right:5px">От: </label>
+                <input class="form-control" type="date" name="dateFrom" placeholder="Название" style="margin-right: 10px;"/>
+                <label for="dateTo" style="display: flex; align-items:center; margin-right:5px">До: </label>
+                <input class="form-control" type="date" name="dateTo" placeholder="Название" style="margin-right: 10px;"/>
+                <input class="form-control" type="text" name="customerName" placeholder="Пользователь" style="margin-right: 10px;"/>
+                <input class="form-control" type="text" name="productTitle" placeholder="Товар" style="margin-right: 10px;"/>
                 <button class="btn btn-success btn-circle" type="submit" value="Применить">
                   <i class="fas fa-check"></i>
                 </button>

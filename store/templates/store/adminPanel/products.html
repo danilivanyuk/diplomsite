@@ -70,7 +70,17 @@
                           <td>{{product.serialNumber}}</td>
                           <td>{{product.cycles}}</td>
                           <td>{{product.color}}</td>
-                          <td>{{product.stockQuantity}} шт {% if product.stockQuantity < 5 %} <span style="color: red;">Заканчивается</span> {% endif %}</td>
+                          <td>
+                            {% if product.stockQuantity != 0 %}
+                            {{product.stockQuantity}} шт
+                            {% endif %}
+                            {% if product.stockQuantity < 5 and product.stockQuantity > 0 %} 
+                              <span style="color: red;">Заканчивается</span> 
+                            {% endif %}
+                            {% if product.stockQuantity == 0 %}
+                            <span style="color: red;">Закончилось</span> 
+                            {% endif %}
+                          </td>
                           <td>{{product.priceBuy}}</td>
                           <td>{{product.priceSell}}</td>
                           <td><a class="btn-update-product" href="{% url 'update_product' product.id %}">Редактировать</a></td>
