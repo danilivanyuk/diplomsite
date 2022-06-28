@@ -1,0 +1,55 @@
+{% extends 'store/adminPanel/layout.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-title">
+  <p>Добавить продукт</p>
+</div>
+
+<form method="POST" enctype="multipart/form-data" id="create-product">
+  {%csrf_token%}
+  <div>
+    <p>{{form.category.label}}:</p>
+    <p>{{form.category}}</p>
+  </div>
+  <div>
+    <p>{{form.image.label}}:</p>
+    <p>{{form.image}}</p>
+  </div>
+  <div>
+    <p>{{form.title.label}}:</p>
+    <p>{{form.title}}</p>
+  </div>
+  <div>
+    <p>{{form.serialNumber.label}}:</p>
+    <p>{{form.serialNumber}}</p>
+  </div>
+  <div>
+    <p>{{form.stockQuantity.label}}:</p>
+    <p>{{form.stockQuantity}}</p>
+  </div>
+  <div>
+    <p>{{form.color.label}}:</p>
+    <p>{{form.color}}</p>
+  </div>
+  <div>
+    <p>{{form.cycles.label}}:</p>
+    <p>{{form.cycles}}</p>
+  </div>
+  <div>
+    <p>{{form.priceBuy.label}}:</p>
+    <p>{{form.priceBuy}}</p>
+  </div>
+  <div>
+    <p>{{form.priceSell.label}}:</p>
+    <p>{{form.priceSell}}</p>
+  </div>
+  <p>{{form.errors.label}}</p>
+  <p><button class="manage-order-btn" type="Submit">Создать товар</button></p>
+</form>
+
+<script>
+</script>
+
+{% endblock %}

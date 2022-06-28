@@ -1,0 +1,69 @@
+{% extends 'store/adminPanel/layout.html' %}
+{% load static %}
+{% load my_tags %}
+{% block content %}
+
+  <div class="container-fluid">
+  <h1 class="h3 mb-2 text-gray-800">Заказы {{customer.name}}:</h1>
+
+  {% for order in orders %}
+
+  
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>{{order.customer}}</th>
+                <th>{{order.customer.phone}}</th>
+                <th>{{order.ordered_date}}</th>
+                <th>
+                  {% for address in order.get_address %}
+                    {{address}}
+                  {% endfor %}
+                </th>
+                <th>{{order.transaction_id}}</th>
+              </tr>
+             </thead>
+              <tfoot>
+                  <tr>
+                    <th>Название</th>
+                    <th>Цена, Количество</th>
+                    <th>Серийный номер</th>
+                    <th>Циклы</th>
+                    <th>Цвет</th>
+                  </tr>
+              </tfoot>
+              
+              <tbody>
+                {% for order_product in order_products %}
+                  {% if order_product.order == order%}
+                    
+                    <tr>
+                      <td>{{order_product.product}}</td>
+                      <td>{{order_product.product.priceSell}} ₸, {{order_product.quantity}} шт</td>
+                      <td>{{order_product.product.serialNumber}}</td>
+                      <td>{{order_product.product.cycles}}</td>
+                      <td>{{order_product.product.color}}</td>
+                      <td></td>
+                    </tr>        
+                  {% endif %}
+                {% endfor %}
+
+              </tbody>
+          </table>
+          <div class="pages">
+            {% include 'store/paginator.html' %}
+          </div>
+      </div>
+      
+  </div>
+</div>
+
+  {% endfor %}
+</div>
+
+{% endblock %}

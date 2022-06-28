@@ -1,0 +1,31 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+
+<div class="product-holder">
+  <div class="product-gallery">
+    <img class="thumbnail" src="{{ product.imageURL }}" alt="">
+  </div>
+  <div class="product-side">
+    <div class="product-title">
+      <p>{{ product.title }}</p>
+      <p class="product-subcategory">{{ product.subcategory }}</p>
+    </div>
+    <div class="product-price">
+      <p>{{ product.priceSell }} ₸</p>
+    </div>
+    
+    <button data-product="{{product.id}}" data-size="{{product.size}}" data-action="add" class=" update-cart product-add-to-cart" >Добавить в корзину</button>
+    <div class="product-description">
+      <p>Циклов: {{product.cycles}}</p>
+      <p>Серийный номер: {{product.serialNumber}}</p>
+      <p>Цвет: {{product.color}}</p>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}

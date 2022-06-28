@@ -1,0 +1,126 @@
+{% extends 'store/adminPanel/layout.html' %}
+<!-- {% load static %} -->
+{% load my_tags %}
+{% block content %}
+
+
+
+  
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Все товары</h1>
+    
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <form action="" method="GET" style="width: 400px; display: flex; padding: 10px;">
+                  <select class="form-control form-select  mb-3 mr-2" name="category_filter">
+                    
+                      <option value="">Все</option>
+                    {% for category in categories %}
+                      <option value="{{category}}" {% if category.name == category_filter %} selected='selected' {% endif %}>
+                        {{category}}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  <input class="form-control" type="text" name="product_title" placeholder="Название" style="margin-right: 10px;"/>
+                  <button class="btn btn-success btn-circle" type="submit" value="Применить">
+                    <i class="fas fa-check"></i>
+                  </button>
+
+                </form>
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Название</th>
+                            <th>Серийный номер</th>
+                            <th>Циклы</th>
+                            <th>Цвет</th>
+                            <th>Количество</th>
+                            <th>Цена покупки</th>
+                            <th>Цена продажи</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                          <th></th>
+                          <th>Название</th>
+                          <th>Серийный номер</th>
+                          <th>Циклы</th>
+                          <th>Цвет</th>
+                          <th>Количество</th>
+                          <th>Цена покупки</th>
+                          <th>Цена продажи</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                      {% for product in products %}
+                        <tr>
+                          <td><img class="" src="{{ product.imageURL }}" style="width: 100px; height: 150px;" alt=""></td>
+                          <td>{{product}}</td>
+                          <td>{{product.serialNumber}}</td>
+                          <td>{{product.cycles}}</td>
+                          <td>{{product.color}}</td>
+                          <td>{{product.stockQuantity}} шт</td>
+                          <td>{{product.priceBuy}}</td>
+                          <td>{{product.priceSell}}</td>
+                          <td><a class="btn-update-product" href="{% url 'update_product' product.id %}">Редактировать</a></td>
+                          <td><a class="btn-delete-product" href="{% url 'delete_product' product.id %}">Удалить</a></td>
+                        </tr>
+                      {% endfor %}
+                        
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="pages">
+              {% include 'store/paginator.html' %}
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+  
+  
+
+
+  
+
+  <script>
+    let update_btns = document.querySelectorAll('.update-product')
+    let delete_btns = document.querySelectorAll('.delete-product')
+    update_btns.forEach(btn => {
+      btn.addEventListener('click', function(){
+        let productId = this.dataset.product
+        update_product(productId)
+      })
+    });
+  
+    function update_product(productId){
+      let url = `/update_product/${productId}`
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken':csrftoken
+        },
+        body: JSON.stringify({
+          productId: productId
+        })
+      })
+  
+    }
+  </script>
+{% endblock %}
+
+

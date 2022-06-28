@@ -1,0 +1,71 @@
+{% extends 'store/adminPanel/layout.html' %}
+{% load static %}
+{% load my_tags %}
+
+{% block content %}
+
+<div class="container-fluid">
+  
+  <h1 class="h3 mb-2 text-gray-800">Удалить категорию <span class="text-primary">{% if subcategory %}{{subcategory}}{% else %}{{category}}{%endif%}</span>? Это приведет к удалению:</h1>
+  
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        {% if products %}
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                  <th></th>
+                  <th>Название</th>
+                  <th>Серийный номер</th>
+                  <th>Циклы</th>
+                  <th>Цвет</th>
+                  <th>Цена покупки</th>
+                  <th>Цена продажи</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for product in products %}
+              <tr>
+                <td><img class="" src="{{ product.imageURL }}" style="width: 100px; height: 150px;" alt=""></td>
+                <td>{{product}}</td>
+                <td>{{product.serialNumber}}</td>
+                <td>{{product.cycles}}</td>
+                <td>{{product.color}}</td>
+                <td>{{product.priceBuy}}</td>
+                <td>{{product.priceSell}}</td>
+                
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+
+        {% endif %}
+      </div>
+      <div class="pages">
+        {% include 'store/paginator.html' %}
+      </div>
+      <div class="d-flex">
+        <a href="{% url 'all_categories' %}" class="btn btn-primary mr-2">Назад</a>
+        <form method="POST">
+          {% csrf_token %}
+          {% if subcategory %}
+          <button class="btn btn-danger">Delete subcategory {{subcategory}}</button>
+          {% else %}
+          <button class="btn btn-danger">Удалить категорию {{category}}</button>
+          {% endif %}
+        </form>
+      </div>
+      
+      
+
+    </div>
+
+    
+  </div>
+
+</div>
+
+{% endblock %}
+
+

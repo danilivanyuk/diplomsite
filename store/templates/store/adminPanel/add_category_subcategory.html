@@ -1,0 +1,18 @@
+{% extends 'store/adminPanel/layout.html' %}
+{% load static %}
+{% load my_tags %}
+{% block content %}
+
+
+<div class="category_forms d-flex" >
+  <form action="{% url 'add_category' %}" method="POST" class="d-flex col-6 mt-3">
+    {%csrf_token%}
+    <div class="category-form d-flex flex-column w-100">
+      {{ category_form }}
+      <button class="btn btn-success btn-sm mt-1" type="Submit">Add category</button>
+    </div>
+  </form>
+  
+  
+</div>
+{% endblock %}

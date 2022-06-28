@@ -1,0 +1,16 @@
+asgiref==3.5.0
+backports.zoneinfo==0.2.1
+dj-database-url==0.5.0
+Django==4.0.3
+django-heroku==0.3.1
+<<<<<<< HEAD
+=======
+gunicorn==20.1.0
+>>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
+Pillow==9.1.0
+psycopg2==2.9.3
+python-dateutil==2.8.2
+six==1.16.0
+sqlparse==0.4.2
+tzdata==2022.1
+whitenoise==6.0.0
