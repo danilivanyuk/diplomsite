@@ -95,6 +95,7 @@
             <a href="{% url 'admin_panel' %}">Панель Админа</a>
           </div>
           {% endif %}
+          {% if request.user.is_authenticated %}
           <div class="cart">
             <a href="{% url 'cart' %}">
               <svg width="48" height="40" viewBox="0 0 48 42" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -104,6 +105,7 @@
               </svg>
             </a>
           </div>
+          {% endif %}
           <div class="lk">
             <a href="{% url 'userProfile' %}">
               <svg width="38" height="40" viewBox="0 0 38 42" fill="none" xmlns="http://www.w3.org/2000/svg">
