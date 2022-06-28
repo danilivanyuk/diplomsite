@@ -60,11 +60,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to="images/",blank=True, null=True,
                               verbose_name="Изображение", default="placeholder.jpeg")
     
-<<<<<<< HEAD
     title = models.CharField(max_length=60, blank=False, null=False, verbose_name='Название', unique=True)
-=======
-    title = models.CharField(max_length=60, blank=False, null=False, verbose_name='Название')
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
     stockQuantity = models.IntegerField(default=1, null=False, blank=False, verbose_name='Количество на складе')
     serialNumber = models.IntegerField(default=0, null=False, blank=False, verbose_name='Серийный номер')
     color = models.CharField(choices=COLORS, blank=True, null=True, verbose_name='Цвет', max_length=50)

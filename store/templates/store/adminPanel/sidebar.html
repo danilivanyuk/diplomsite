@@ -87,6 +87,20 @@
     </a>
   </li>
 
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseReports"
+        aria-expanded="true" aria-controls="collapseReports">
+        <i class="fas fa-fw fa-folder"></i>
+        <span>Отчеты</span>
+    </a>
+    <div id="collapseReports" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="{% url 'product_reports' %}">Отчет по товарам</a>
+            <a class="collapse-item" href="{% url 'order_reports' %}">Отчет по заказам</a>
+        </div>
+    </div>
+</li>
+
   <!-- Nav Item - Tables -->
 
 

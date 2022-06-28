@@ -68,23 +68,6 @@ def homepage(request):
 def search(request):
     search_input = request.GET.get('global-search')
 
-<<<<<<< HEAD
-    products = Product.objects.filter(
-        Q(title__icontains=search_input) | Q(subcategory__name__icontains=search_input))
-
-    products_data = filterProducts(request, products)
-
-    products = products_data['products']
-    sizes = products_data['cycles']
-    price_max = products_data['price_max']
-    price_min = products_data['price_min']
-    sort = products_data['sort_value']
-    gender = products_data['gender']
-
-    products = paginatorUtil(request, products)
-    context = {'products': products, 'sizes': sizes, 'price_min': price_min,
-               'price_max': price_max, 'sort_value': sort, 'gender': gender}
-=======
     products = Product.objects.filter(title__icontains=search_input)
 
     products_data = filterProducts(request, products)
@@ -98,7 +81,6 @@ def search(request):
 
     products = paginatorUtil(request, products)
     context = {'products': products}
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
     return render(request, 'store/search_result.html', context)
 
 
@@ -108,10 +90,6 @@ def userProfile(request):
     order_products = OrderProduct.objects.filter(
         order__in=orders)
     print(order_products)
-<<<<<<< HEAD
-=======
-    print(orders)
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
 
     context = {'orders': orders, 'order_products': order_products}
     return render(request, 'store/userProfile.html', context)
@@ -150,13 +128,7 @@ def category(request, category_id):
     products = paginatorUtil(request, products)
 
     context = {
-<<<<<<< HEAD
-               'category': category, 'products': products, 'sizes': sizes, 'price_min': price_min,
-                'price_max': price_max, 'sort_value': sort,
-                 'gender': gender}
-=======
                'category': category, 'products': products, 'sizes': sizes, 'price_min': price_min, 'price_max': price_max, 'sort_value': sort, 'gender': gender}
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
     return render(request, 'store/category.html', context)
 
 def product(request, product_id):
@@ -260,16 +232,7 @@ def adminPanel(request):
     total_customers = Customer.objects.aggregate(total=Count('user'))
 
     context = {'orders': orders,
-<<<<<<< HEAD
-               'order_products': order_products, 'months': months, 'earnings_month_1': earnings_month_1,
-                'earnings_month_2': earnings_month_2, 'earnings_month_3': earnings_month_3,
-                 'earnings_month_4': earnings_month_4, 'earnings_month_5': earnings_month_5,
-                  'annual_earnings': annual_earnings, 
-               'unfinished_orders_count': unfinished_orders_count, 'total_customers': total_customers,
-                'new_unfinished_order':new_unfinished_order}
-=======
                'order_products': order_products, 'months': months, 'earnings_month_1': earnings_month_1, 'earnings_month_2': earnings_month_2, 'earnings_month_3': earnings_month_3, 'earnings_month_4': earnings_month_4, 'earnings_month_5': earnings_month_5, 'annual_earnings': annual_earnings, 'unfinished_orders_count': unfinished_orders_count, 'total_customers': total_customers, 'new_unfinished_order':new_unfinished_order}
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
     return render(request, 'store/adminPanel/adminPanel.html', context)
 
 
@@ -476,3 +439,89 @@ def deleteOrder(request, pk):
         orderProduct.product.save()
     order.delete()
     return redirect('admin_panel')
+
+import xlwt
+@admin_only
+def productReports(request):
+    
+    categories = Category.objects.all()
+    category_filter = request.GET.get('category_filter')
+    product_title = request.GET.get('product_title')
+    a = []
+    print(a)
+    if is_valid_queryparam(product_title):
+        products = Product.objects.filter(title__icontains=product_title)
+        for i in products:
+            print(i)
+            a.append(i.id)
+
+    elif is_valid_queryparam(category_filter):
+        products = Product.objects.filter(category__name=category_filter)
+        for i in products:
+            a.append(i.id)
+    else:
+        products = Product.objects.all()
+        for i in products:
+            print(i)
+            a.append(i.id)
+
+    if request.method == 'POST':
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="Products.xls"'
+
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Товары')
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+        font_style.font.height = 320
+        font_style.alignment.horz = xlwt.Alignment.HORZ_CENTER
+
+        ws.write_merge(1, 3, 3,8, "Список Товаров", font_style)
+        row_num = 5
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+        font_style.font.height= 280
+        font_style.borders.top = 2
+        font_style.borders.right = 2
+        font_style.borders.left = 2
+        font_style.borders.bottom = 2
+
+        columns = ['Название', 'Категория', 'Серийный н.', 'Циклы','Цвет', 'Количество', 'Цена покупки', 'Цена продажи']
+        ws.col(2).width = 7000 # Название
+        ws.col(3).width = 10000 #Категория
+        ws.col(4).width = 5000 #Серийный номер
+        ws.col(5).width = 3500 #Циклы
+        ws.col(6).width = 4000 #Цвет
+        ws.col(7).width = 4500 # Количество
+        ws.col(8).width = 5000 # Цена покупки
+        ws.col(9).width = 5200 # Цена продажи
+        # ws.col(10).width = 3000 # счет
+
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num+2, columns[col_num], font_style)
+
+        font_style = xlwt.XFStyle()
+        font_style.font.height = 240
+        font_style.borders.top = 1
+        font_style.borders.right = 1
+        font_style.borders.left = 1
+        font_style.borders.bottom = 1
+
+        rows = Product.objects.filter(id__in = a).values_list('title', 'category__name', 'serialNumber', 'cycles','color', 'stockQuantity', 'priceBuy', 'priceSell')
+
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num+2, row[col_num], font_style)
+        wb.save(response)
+        return response
+
+    context = {'products': products, 'categories':categories, 'category_filter':category_filter}
+    return render(request, 'store/adminPanel/product_reports.html', context)
+
+
+@admin_only
+def orderReports(request):
+    
+    context = {}
+    return render(request, 'store/adminPanel/order_reports.html', context)

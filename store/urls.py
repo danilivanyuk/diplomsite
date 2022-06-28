@@ -18,11 +18,8 @@ urlpatterns = [
     path('catalog/product/<int:product_id>/',
          views.product, name="product"),
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
     # ADMIN PANEL
 
     path('admin_panel/', views.adminPanel, name="admin_panel"),
@@ -62,6 +59,10 @@ urlpatterns = [
          views.showCustomers, name="customers"),
     path('admin_panel/customer_orders/<int:customer_id>',
          views.showCustomerOrders, name="customer_orders"),
+    path('admin_panel/product_report/',
+         views.productReports, name="product_reports"),
+    path('admin_panel/order_report/',
+         views.orderReports, name="order_reports"),
 
 
     # PROCESSES

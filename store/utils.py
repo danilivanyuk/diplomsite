@@ -24,19 +24,8 @@ def filterProducts(request, products):
     price_max = request.GET.get('price-to-filter')
     sort = request.GET.get('sort')
 
-<<<<<<< HEAD
-    if sizes != []:
-        products = products.filter(
-            reduce(lambda x, y: x | y, [Q(size__contains=item) for item in sizes]))
-    if gender != []:
-        products = products.filter(
-            reduce(lambda x, y: x | y, [
-                   Q(gender=item) for item in gender])
-        )
-=======
    
     
->>>>>>> 072c191317aa73da9ae42539e6a9a6c07e0c0602
     if is_valid_queryparam(sort):
         if sort == 'order_by_min_price':
             products = products.order_by('price')

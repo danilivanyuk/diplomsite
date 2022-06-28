@@ -33,48 +33,49 @@
                   </button>
 
                 </form>
+                <form method="POST" enctype="multipart/form-data"  action="" class="mt-3 mb-3">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Экспортировать в эксель</button>
+                  </form>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th></th>
                             <th>Название</th>
+                            <th>Категория</th>
                             <th>Серийный номер</th>
                             <th>Циклы</th>
                             <th>Цвет</th>
                             <th>Количество</th>
                             <th>Цена покупки</th>
                             <th>Цена продажи</th>
-                            <th></th>
-                            <th></th>
+                         
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                          <th></th>
                           <th>Название</th>
+                          <th>Категория</th>
                           <th>Серийный номер</th>
                           <th>Циклы</th>
                           <th>Цвет</th>
                           <th>Количество</th>
                           <th>Цена покупки</th>
                           <th>Цена продажи</th>
-                          <th></th>
-                          <th></th>
+                         
                         </tr>
                     </tfoot>
                     <tbody>
                       {% for product in products %}
                         <tr>
-                          <td><img class="" src="{{ product.imageURL }}" style="width: 100px; height: 150px;" alt=""></td>
                           <td>{{product}}</td>
+                          <td>{{product.category}}</td>
                           <td>{{product.serialNumber}}</td>
                           <td>{{product.cycles}}</td>
                           <td>{{product.color}}</td>
                           <td>{{product.stockQuantity}} шт {% if product.stockQuantity < 5 %} <span style="color: red;">Заканчивается</span> {% endif %}</td>
                           <td>{{product.priceBuy}}</td>
                           <td>{{product.priceSell}}</td>
-                          <td><a class="btn-update-product" href="{% url 'update_product' product.id %}">Редактировать</a></td>
-                          <td><a class="btn-delete-product" href="{% url 'delete_product' product.id %}">Удалить</a></td>
+                         
                         </tr>
                       {% endfor %}
                         
